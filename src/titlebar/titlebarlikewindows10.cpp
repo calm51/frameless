@@ -189,12 +189,28 @@ void TitlebarLikeWindows10::draw(ToolButton_righttop_windows10* button){
     painter.setPen(Qt::NoPen);
     if (button->_is_most_right && !(this->_window && this->_window->isMaximized())){
         painter.setRenderHint(QPainter::Antialiasing);
-        QPainterPath path;
+        QPainterPath path(border_rect.topLeft());
         path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(border_rect, fl->round4.at(1),fl->round4.at(1));
-        path.addRect(QRect(border_rect.left(), border_rect.top()+border_rect.height()/2, border_rect.width(), border_rect.height()/2));
-        path.addRect(QRect(border_rect.left(), border_rect.top(), border_rect.width()/2, border_rect.height()/2));
+        //        path.addRoundedRect(border_rect, fl->round4.at(1),fl->round4.at(1));
+        //        path.addRect(QRect(border_rect.left(), border_rect.top()+border_rect.height()/2, border_rect.width(), border_rect.height()/2));
+        //        path.addRect(QRect(border_rect.left(), border_rect.top(), border_rect.width()/2, border_rect.height()/2));
+        int radius = fl->round4.at(1);
+
+        QRectF arc_rect(border_rect.width() - (radius * 2), border_rect.top(), radius * 2, radius * 2);
+        path.moveTo(border_rect.topLeft());
+        path.lineTo(border_rect.left(),border_rect.height());
+        path.lineTo(border_rect.width(),border_rect.height());
+        if (radius<=button->size().height()){
+            path.arcTo(arc_rect, 0, 90);
+        }else{
+            path.lineTo(border_rect.width(),border_rect.top());
+        }
+        path.closeSubpath();
         painter.fillPath(path, painter.brush().color());
+        //        painter.setBrush(Qt::NoBrush);
+        //        painter.setPen(QPen(painter.brush().color()));
+        //        painter.drawPath(path);
+
         painter.setRenderHint(QPainter::Antialiasing, false);
     }else{
         painter.drawRect(border_rect);
@@ -323,6 +339,12 @@ border-top-left-radius:%5px; border-top-right-radius:%6px;
         )").arg(QString::number(border_top_width),QString::number(border_bottom_width),GLOBAL.qcolor2qss(colors.at(9)),GLOBAL.qcolor2qss(colors.at(10)))
                                   .arg(QString::number(fl->round4.at(0)),QString::number(fl->round4.at(1))));
         // ui->widget_4->setContentsMargins(0,border_top_width,0,border_bottom_width);
+        QGridLayout* l1 = qobject_cast<QGridLayout*>(ui->widget_2->layout());
+        if (fl->round4.at(0)/2>6){
+            auto l1_cm = l1->contentsMargins(); l1_cm.setLeft(fl->round4.at(0)/2);l1->setContentsMargins(l1_cm);
+        }else{
+            auto l1_cm = l1->contentsMargins(); l1_cm.setLeft(6);l1->setContentsMargins(l1_cm);
+        }
     }else{
         ui->widget->setStyleSheet(QString(R"(
 QWidget#widget_round4{
@@ -335,6 +357,8 @@ border-top-left-radius:0px; border-top-right-radius:0px;
 }
         )").arg(QString::number(border_top_width),QString::number(border_bottom_width),GLOBAL.qcolor2qss(colors.at(9)),GLOBAL.qcolor2qss(colors.at(10)))
                                   );
+        QGridLayout* l1 = qobject_cast<QGridLayout*>(ui->widget_2->layout());
+        auto l1_cm = l1->contentsMargins(); l1_cm.setLeft(6);l1->setContentsMargins(l1_cm);
     }
 
 }
