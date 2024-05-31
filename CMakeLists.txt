@@ -32,16 +32,16 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 if (WIN32)
     message("CMAKE_CXX_COMPILER_ID ${CMAKE_CXX_COMPILER_ID}")
     if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python "${CMAKE_SOURCE_DIR}/script/package.py" win32msvc) # PRE_BUILD | PRE_LINK| POST_BUILD
+        ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python "${CMAKE_SOURCE_DIR}/script/output-cpplib.py" win32msvc) # PRE_BUILD | PRE_LINK| POST_BUILD
     elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python "${CMAKE_SOURCE_DIR}/script/package.py" win32mingw) # PRE_BUILD | PRE_LINK| POST_BUILD
+        ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python "${CMAKE_SOURCE_DIR}/script/output-cpplib.py" win32mingw) # PRE_BUILD | PRE_LINK| POST_BUILD
     endif ()
     set_target_properties(frameless PROPERTIES
         WINDOWS_EXPORT_ALL_SYMBOLS TRUE
     )
 
 elseif (ANDROID)
-    ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python3 "${CMAKE_SOURCE_DIR}/script/package.py" android)
+    ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python3 "${CMAKE_SOURCE_DIR}/script/output-cpplib.py" android)
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS AndroidExtras)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS AndroidExtras)
     target_link_libraries(frameless PRIVATE Qt${QT_VERSION_MAJOR}::AndroidExtras)
@@ -50,7 +50,7 @@ elseif (ANDROID)
     #    set_target_properties(frameless PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/android-build/libs/armeabi-v7a")
 
 elseif (UNIX AND NOT APPLE AND NOT WIN32 AND NOT ANDROID)
-    ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python3 "${CMAKE_SOURCE_DIR}/script/package.py" linux64)
+    ADD_CUSTOM_COMMAND(TARGET ${PROJECT_NAME} POST_BUILD COMMAND python3 "${CMAKE_SOURCE_DIR}/script/output-cpplib.py" linux64)
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS X11Extras)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS X11Extras)
     target_link_libraries(frameless PRIVATE Qt${QT_VERSION_MAJOR}::X11Extras Qt${QT_VERSION_MAJOR}::CorePrivate)

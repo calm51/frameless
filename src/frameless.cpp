@@ -47,6 +47,7 @@ void Frameless::app(QApplication &a){
 }
 
 void Frameless::_new_widget(){
+    //    _window->setWindowFlag(Qt::X11BypassWindowManagerHint,true);
     _window->setWindowFlag(Qt::FramelessWindowHint);
     _window->setAttribute(Qt::WA_TranslucentBackground);
     _window->setAttribute(Qt::WA_StyledBackground);
