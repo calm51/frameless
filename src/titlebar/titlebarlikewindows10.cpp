@@ -200,7 +200,7 @@ void TitlebarLikeWindows10::draw(ToolButton_righttop_windows10* button){
         path.moveTo(border_rect.topLeft());
         path.lineTo(border_rect.left(),border_rect.height());
         path.lineTo(border_rect.width(),border_rect.height());
-        if (radius<=button->size().height()){
+        if (radius>0 && radius<=button->size().height()){
             path.arcTo(arc_rect, 0, 90);
         }else{
             path.lineTo(border_rect.width(),border_rect.top());
