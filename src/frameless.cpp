@@ -107,6 +107,7 @@ void Frameless::_new_widget(){
 
 void Frameless::init(QMainWindow &w){
     this->_window = &w;
+    this->_window_size = this->_window->size();
     central_widget = w.centralWidget();
     _new_widget();
     w.setCentralWidget(background_main_widget);
@@ -121,15 +122,27 @@ void Frameless::init(QWidget &w){
 
 void Frameless::init(QDialog &w){
     this->_window = &w;
+    this->_window_size = this->_window->size();
     central_layout = qobject_cast<QGridLayout*>(w.layout());
     if (central_layout){
-        auto lay = qobject_cast<QGridLayout*>(central_layout);
-        lay->setContentsMargins(0,0,0,0);
-        lay->setSpacing(0);
-        central_widget = lay->itemAt(0)->widget();
+        //        auto lay = qobject_cast<QGridLayout*>(central_layout);
+        //        lay->setContentsMargins(0,0,0,0);
+        //        lay->setSpacing(0);
+        //        central_widget = lay->itemAt(0)->widget();
+        //        _new_widget();
+        //        lay->removeWidget(central_widget);
+        //        lay->addWidget(background_main_widget,0,0,1,1);
+
+        central_widget = new QWidget();
+        central_widget->setLayout(central_layout);
+        central_layout = new QGridLayout();
+        central_layout->setContentsMargins(0,0,0,0);
+        central_layout->setSpacing(0);
         _new_widget();
-        lay->removeWidget(central_widget);
+        auto lay = qobject_cast<QGridLayout*>(central_layout);
         lay->addWidget(background_main_widget,0,0,1,1);
+        w.setLayout(central_layout);
+
     }else{
         central_layout = qobject_cast<QVBoxLayout*>(w.layout());
         if (central_layout){
@@ -241,7 +254,6 @@ void Frameless::loadthemesetting(){
 
 }
 
-
 void Frameless::set_titlebar(QWidget &titlebar){
     titlebar_widget = &titlebar;
     titlebar_main_layout->addWidget(&titlebar,0,0,1,1);
@@ -250,6 +262,14 @@ void Frameless::set_titlebar(QWidget &titlebar){
         wi->installEventFilter(this);
     }
 #endif
+}
+
+
+bool Frameless::is_inside_window(const QPoint &pos){
+    //    ____<<pos;
+    //    const QPoint &localPoint = this->_window->mapFromGlobal(pos);
+    //    ____<<localPoint;
+    return this->_window->rect().contains(pos);
 }
 
 bool Frameless::is_titlebar(const QPoint &pos){
@@ -441,6 +461,12 @@ border-top-left-radius:%2px; border-top-right-radius:%3px;
     }
 }
 
+void Frameless::resizeto(){
+    _window->resize(_window_size.width()+(shadow_size*2),
+                    _window_size.height()+(shadow_size*2)+titlebar_widget->height() ); //
+}
+
+
 
 #if defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID)
 void Frameless::_x11_move_window(const WId &wid,const QPoint &pos){
@@ -461,6 +487,7 @@ void Frameless::_x11_move_window(const WId &wid,const QPoint &pos){
     XSendEvent(display, QX11Info::appRootWindow(QX11Info::appScreen()),False, SubstructureNotifyMask | SubstructureRedirectMask,&event);
     XFlush(display);
 }
+
 #endif
 
 bool Frameless::eventFilter(QObject *watched, QEvent *event){
@@ -500,7 +527,7 @@ bool Frameless::eventFilter(QObject *watched, QEvent *event){
             }else{
                 if(e->button()==Qt::LeftButton){
                     QPair<bool,Qt::Edges> _bn = is_allow_resize(e->pos());
-                    if(is_titlebar(e->pos()) && !_bn.first){
+                    if((is_titlebar(e->pos())||movable_in_whole_window&&watched==this->_window&&is_inside_window(e->pos())) && !_bn.first){
                         //#ifdef Q_OS_LINUX
                         //                if (w->isMaximized()){
                         //                    shadow->setBlurRadius(shadow_size);

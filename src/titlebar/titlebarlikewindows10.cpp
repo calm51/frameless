@@ -96,9 +96,9 @@ QToolButton{
     connect(ui->toolButton_6,&QToolButton::clicked,this,[=](){
         this->_window->close();
     });
-    connect(this,&QWidget::windowTitleChanged,this,[=](const QString &s){
-        ui->label_2->setText(s);
-    });
+//    connect(this,&QWidget::windowTitleChanged,this,[=](const QString &s){
+//        ui->label_title->setText(s);
+//    });
     connect(this,&QWidget::windowIconChanged,this,[=](const QIcon &icon){
         ui->label->setFixedSize(16,16);
         ui->label->setPixmap(icon.pixmap(QSize(64,64)));
@@ -370,10 +370,18 @@ QHBoxLayout *TitlebarLikeWindows10::w6layout(){
     return qobject_cast<QHBoxLayout*>(ui->widget_6->layout());
 }
 void TitlebarLikeWindows10::set_title(const QString &s){
-    ui->label_2->setText(s);
+    ui->label_title->setText(s);
 }
 void TitlebarLikeWindows10::set_title_enable(const bool &b){
-    ui->label_2->setEnabled(b);
+    ui->label_title->setEnabled(b);
+}
+
+void TitlebarLikeWindows10::set_title_fontsize(const int &pt){
+    if (pt==0){
+        ui->label_title->setStyleSheet("");
+    }else{
+        ui->label_title->setStyleSheet(QString("#label_title{font-size:%1pt;}").arg(pt));
+    }
 }
 
 bool TitlebarLikeWindows10::eventFilter(QObject *watched, QEvent *event){

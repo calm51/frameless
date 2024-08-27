@@ -52,6 +52,7 @@ public:
     bool allow_showMinimized = true;
     int titlebar_MinimumHeight = round4.at(0)>round4.at(1)?round4.at(0):round4.at(1);
     int border_width = 0;
+    bool movable_in_whole_window = false;
     QList<QColor> colors = {
         QColor(241,241,241), // titlebar background color
         QColor(255,255,255), // central widget background color
@@ -78,6 +79,12 @@ public:
 
     QWidget *titlebar_widget = nullptr;
     QWidget* _window = nullptr;
+    QSize _window_size;
+    void resizeto();
+
+    //    QSize getsize_central_widget();
+    QWidget *central_widget = nullptr;
+
 
 signals:
     void windowStateChanged(const Qt::WindowStates &state);
@@ -89,6 +96,7 @@ private:
     void _x11_move_window(const WId &wid, const QPoint &pos);
 #endif
 
+    bool is_inside_window(const QPoint &pos);
     bool is_titlebar(const QPoint &pos);
     QPair<bool,Qt::Edges> is_allow_resize(const QPoint &pos);
 
@@ -108,7 +116,7 @@ private:
     QGridLayout *menubar_main_layout = nullptr;
     QGridLayout *bottombar_main_layout = nullptr;
 
-    QWidget *central_widget = nullptr;
+
     QWidget *background_main_widget = nullptr;
     QWidget *central_main_widget  = nullptr;
     QWidget *titlebar_main_widget = nullptr;

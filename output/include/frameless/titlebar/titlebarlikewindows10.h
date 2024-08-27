@@ -63,6 +63,7 @@ public:
     QHBoxLayout* w6layout();
     void set_title(const QString &s);
     void set_title_enable(const bool &b);
+    void set_title_fontsize(const int &pt);
 
 
 private:
