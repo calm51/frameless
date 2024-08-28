@@ -57,7 +57,12 @@ elseif (UNIX AND NOT APPLE AND NOT WIN32 AND NOT ANDROID)
 
 endif()
 
-add_definitions(-D_HAS_STD_BYTE=0)
+if (WIN32)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        #add_definitions(-D_HAS_STD_BYTE=0) # c++17 std::byte
+        target_compile_definitions(${PROJECT_NAME} PRIVATE _HAS_STD_BYTE=0)
+    endif ()
+endif()
 
 #ADD_SUBDIRECTORY(${PROJECT_SOURCE_DIR}/test/framelessdemo)
 

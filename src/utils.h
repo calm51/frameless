@@ -10,7 +10,7 @@ FRAMELESS_BEGIN_NAMESPACE
 
 
 template <typename T3, typename T4>
-LIB_EXPORT QPair<Frameless*,T3*> template_windows10(T4&w,const qint32 &titlebar_MinimumHeight,const qint32 &button_MinimumWidth=40,const qint32 &titlebar_FixedHeight=-1){
+QPair<Frameless*,T3*> template_windows10(T4&w,const qint32 &titlebar_MinimumHeight,const qint32 &button_MinimumWidth=40,const qint32 &titlebar_FixedHeight=-1){
     Frameless *fl = new Frameless(&w);
     fl->titlebar_MinimumHeight = titlebar_MinimumHeight; // 24-40 28-44 28-46
     fl->init(w); fl->loadthemesetting(); w.fl = fl;
@@ -47,7 +47,7 @@ enum Flag{
 #endif // _FRAMELESS_TEMPLATE_TOPLINE_COLOR
 
 template <typename T3>
-LIB_EXPORT void template_topline_color(QPair<Frameless*,T3*> &fl_tb, const TopLineColor::Flag &tlc){
+void template_topline_color(QPair<Frameless*,T3*> &fl_tb, const TopLineColor::Flag &tlc){
     __global__ & fg = G();
     if (tlc==TopLineColor::Purple){
         if (fg.currentTheme==Theme::White){
@@ -64,7 +64,7 @@ LIB_EXPORT void template_topline_color(QPair<Frameless*,T3*> &fl_tb, const TopLi
 
 
 template <typename T1,typename T2>
-LIB_EXPORT void template_dialog_tocenter(T1 *dialog, T2 *parent){
+void template_dialog_tocenter(T1 *dialog, T2 *parent){
     if (parent){
         const QRect &parentGeometry = parent->geometry();
         const QRect &childGeometry = dialog->geometry();
